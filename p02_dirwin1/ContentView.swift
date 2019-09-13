@@ -8,8 +8,8 @@
 
 import SwiftUI
 
-var numVerticalLines: Int = 32
-var numHorizontalLines: Int = 32
+var numVerticalLines: Int = 25
+var numHorizontalLines: Int = 25
 
 struct ContentView : View{
     var body: some View {

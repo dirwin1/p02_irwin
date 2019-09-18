@@ -66,12 +66,22 @@ struct ContentView : View{
                     
                     var lastPoint : CGPoint = pointsCopy[0]
                     for point in pointsCopy {
+                        //draw point
+                        //draw point
                         path.move(to: lastPoint)
                         path.addLine(to: point)
                         lastPoint = point
                     }
                 }
-                .stroke(Color.red, style: StrokeStyle(lineWidth: 5, lineCap: .round))
+                .stroke(Color.red, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                
+
+                ZStack{
+                        Circle()
+                            .size(width: 10, height: 10)
+                            .offset(points[0])
+                            .stroke(Color.red)
+                }
             }
             Spacer()
         }

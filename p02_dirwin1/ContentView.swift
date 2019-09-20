@@ -11,6 +11,7 @@ import SwiftUI
 var numVerticalLines: Int = 25
 var numHorizontalLines: Int = 25
 var points : [CGPoint] = [CGPoint(x:1, y:1), CGPoint(x:2, y:2), CGPoint(x:3, y:2), CGPoint(x:4, y:3), CGPoint(x:5, y:1.5)]
+var pointsCopy : [CGPoint] = []
 
 struct ContentView : View{
     var body: some View {
@@ -57,7 +58,7 @@ struct ContentView : View{
                     xScale *= 1.2
                     yScale *= 1.2
                     
-                    var pointsCopy = points
+                    pointsCopy = points
                     
                     for i in pointsCopy.indices {
                         pointsCopy[i].x = (pointsCopy[i].x / xScale) * geometry.size.width
@@ -70,23 +71,45 @@ struct ContentView : View{
                         //draw point
                         path.move(to: lastPoint)
                         path.addLine(to: point)
+
                         lastPoint = point
                     }
                 }
                 .stroke(Color.red, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                 
-
-                ZStack{
-                        Circle()
-                            .size(width: 10, height: 10)
-                            .offset(points[0])
-                            .stroke(Color.red)
+                //Path { path in
+                    //var lastPoint : CGPoint = pointsCopy[0]
+                    //for point in pointsCopy {
+                        //path.move(to: lastPoint)
+                    //    path.addArc(center: lastPoint, radius: 10, startAngle: .degrees(0), endAngle: .degrees(350), clockwise: true)
+                    //    lastPoint = point
+                    //}
+                    //path.move(to: lastPoint)
+                    //path.addArc(center: CGPoint(x:0,y:0), radius: 10, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
+                    
+                    //lastPoint = pointsCopy[1]
+                    //path.addArc(center: lastPoint, radius: 10, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
+                //}
+                //.stroke(Color.blue, lineWidth: 2);
+                
+                //var counter : Int = 0
+                ForEach((1...10), id: \.self) {
+                    Path{ path in
+                        path.addArc(center: points[0], radius: 10, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
+                    }
+                    .stroke(Color.blue, linewidth: 2)
+                    //counter++
                 }
             }
             Spacer()
         }
         .padding()
     }
+}
+
+struct Point: Identifiable {
+    let id: Int
+    let position: CGPoint
 }
 
 

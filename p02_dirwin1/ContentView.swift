@@ -7,14 +7,13 @@
 //
 
 import SwiftUI
-
 var numVerticalLines: Int = 25
 var numHorizontalLines: Int = 25
-var points : [CGPoint] = [CGPoint(x:0, y:1), CGPoint(x:1, y:1), CGPoint(x:2, y:2), CGPoint(x:3, y:2), CGPoint(x:4, y:3), CGPoint(x:5, y:1.5)]
-var pointsCopy : [CGPoint] = []
-var points2 : [Point] = [Point(id: 0, position: CGPoint(x:0, y: 1))]
+var pointsCopy : [Point] = []
 
 struct ContentView : View{
+    @State private var points = [Point(id: 0, position: CGPoint(x:0, y: 1)), Point(id: 1, position: CGPoint(x:1, y: 1)), Point(id: 2, position: CGPoint(x:2, y: 2)), Point(id: 3, position: CGPoint(x:3, y: 2)), Point(id: 4, position: CGPoint(x:4, y: 3)), Point(id: 5, position: CGPoint(x:5, y: 1.5))]
+
     var body: some View {
         VStack(alignment: .leading){
             GeometryReader { geometry in
@@ -45,80 +44,80 @@ struct ContentView : View{
                 
                 //Add points
                 Path{ path in
-                    //Calculate the scale
-                    var xScale : CGFloat = 0
-                    var yScale : CGFloat = 0
-                    for point in points{
-                        if(point.x > xScale){
-                            xScale = point.x
+                    if(self.points.count > 0){
+                        //Calculate the scale
+                        var xScale : CGFloat = 0
+                        var yScale : CGFloat = 0
+                        for point in self.points{
+                            if(point.position.x > xScale){
+                                xScale = point.position.x
+                            }
+                            if(point.position.y > yScale){
+                                yScale = point.position.y
+                            }
                         }
-                        if(point.y > yScale){
-                            yScale = point.y
+                        xScale *= 1.2
+                        yScale *= 1.2
+                        
+                        pointsCopy = self.points
+                        
+                        for i in pointsCopy.indices {
+                            pointsCopy[i].position.x = (pointsCopy[i].position.x / xScale) * geometry.size.width
+                            pointsCopy[i].position.y = (1 - (pointsCopy[i].position.y / yScale)) * geometry.size.height
                         }
-                    }
-                    xScale *= 1.2
-                    yScale *= 1.2
-                    
-                    pointsCopy = points
-                    
-                    for i in pointsCopy.indices {
-                        pointsCopy[i].x = (pointsCopy[i].x / xScale) * geometry.size.width
-                        pointsCopy[i].y = (1 - (pointsCopy[i].y / yScale)) * geometry.size.height
-                    }
-                    
-                    var lastPoint : CGPoint = pointsCopy[0]
-                    for point in pointsCopy {
-                        //draw point
-                        //draw point
-                        path.move(to: lastPoint)
-                        path.addLine(to: point)
+                        
+                        var lastPoint : Point = pointsCopy[0]
+                        for point in pointsCopy {
+                            //draw point
+                            path.move(to: lastPoint.position)
+                            path.addLine(to: point.position)
 
-                        lastPoint = point
+                            lastPoint = point
+                        }
                     }
                 }
                 .stroke(Color.red, style: StrokeStyle(lineWidth: 4, lineCap: .round))
 
                 
                 Path { path in
-                    var lastPoint : CGPoint = pointsCopy[0]
+                    var lastPoint : Point = pointsCopy[0]
                     for point in pointsCopy {
-                        path.move(to: lastPoint)
-                        path.addArc(center: lastPoint, radius: 5, startAngle: .degrees(0), endAngle: .degrees(361), clockwise: true)
+                        path.move(to: lastPoint.position)
+                        path.addArc(center: lastPoint.position, radius: 5, startAngle: .degrees(0), endAngle: .degrees(361), clockwise: true)
                         lastPoint = point
                         path.closeSubpath()
                     }
-                    path.move(to: lastPoint)
-                    path.addArc(center: lastPoint, radius: 5, startAngle: .degrees(0), endAngle: .degrees(361), clockwise: true)
+                    path.move(to: lastPoint.position)
+                    path.addArc(center: lastPoint.position, radius: 5, startAngle: .degrees(0), endAngle: .degrees(361), clockwise: true)
                     path.closeSubpath()
                     
                 }
-                //.stroke(Color.blue, lineWidth: 2)
                 .fill(Color.red)
-                
-                
-                //var counter : Int = 0
-                //ForEach((1...10), id: \.self) {
-                    //Path{ path in
-                    //    path.addArc(center: points[0], radius: 10, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
-                    //}
-                    //.stroke(Color.blue, linewidth: 2)
-                    //counter++
-                //}
             }
             
             
 
-            List(points2) { point in
-                Text("hallo")
+            List {
+                ForEach(points){ point in
+                    HStack{
+                        Text("X: " + point.position.x.description + "    Y: " + point.position.y.description)
+                    }
+                }.onDelete(perform: delete)
             }
+            .navigationBarTitle(Text("Points"))
         }
         .padding()
     }
+    
+    func delete(at offsets: IndexSet) {
+        points.remove(atOffsets: offsets)
+    }
 }
+
 
 struct Point: Identifiable {
     let id: Int
-    let position: CGPoint
+    var position: CGPoint
 }
 
 struct ContentView_Previews: PreviewProvider {

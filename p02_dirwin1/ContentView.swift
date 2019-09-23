@@ -10,9 +10,12 @@ import SwiftUI
 var numVerticalLines: Int = 25
 var numHorizontalLines: Int = 25
 var pointsCopy : [Point] = []
+var currID : Int = 6
 
 struct ContentView : View{
     @State private var points = [Point(id: 0, position: CGPoint(x:0, y: 1)), Point(id: 1, position: CGPoint(x:1, y: 1)), Point(id: 2, position: CGPoint(x:2, y: 2)), Point(id: 3, position: CGPoint(x:3, y: 2)), Point(id: 4, position: CGPoint(x:4, y: 3)), Point(id: 5, position: CGPoint(x:5, y: 1.5))]
+    @State private var xCoord: String = ""
+    @State private var yCoord: String = ""
 
     var body: some View {
         VStack(alignment: .leading){
@@ -78,7 +81,7 @@ struct ContentView : View{
                 }
                 .stroke(Color.red, style: StrokeStyle(lineWidth: 4, lineCap: .round))
 
-                
+                //points
                 Path { path in
                     var lastPoint : Point = pointsCopy[0]
                     for point in pointsCopy {
@@ -95,8 +98,21 @@ struct ContentView : View{
                 .fill(Color.red)
             }
             
+            //add points
+            HStack{
+                TextField("X: ", text: $xCoord)
+                TextField("Y: ", text: $yCoord)
+            }
             
-
+            Button(action: {
+                //self.points.append(Point(currID, CGPoint(1, 10)))
+                print("Add Point tapped")
+            }) {
+                Text("Add Point")
+                    //.foregroundColor(Color.green)
+            }
+            
+            //list of points
             List {
                 ForEach(points){ point in
                     HStack{
@@ -111,6 +127,14 @@ struct ContentView : View{
     
     func delete(at offsets: IndexSet) {
         points.remove(atOffsets: offsets)
+    }
+}
+
+extension ContentView{
+    struct PointsList : View{
+        var body: some View{
+            Text("HELP")
+        }
     }
 }
 

@@ -10,8 +10,9 @@ import SwiftUI
 
 var numVerticalLines: Int = 25
 var numHorizontalLines: Int = 25
-var points : [CGPoint] = [CGPoint(x:1, y:1), CGPoint(x:2, y:2), CGPoint(x:3, y:2), CGPoint(x:4, y:3), CGPoint(x:5, y:1.5)]
+var points : [CGPoint] = [CGPoint(x:0, y:1), CGPoint(x:1, y:1), CGPoint(x:2, y:2), CGPoint(x:3, y:2), CGPoint(x:4, y:3), CGPoint(x:5, y:1.5)]
 var pointsCopy : [CGPoint] = []
+var points2 : [Point] = [Point(id: 0, position: CGPoint(x:0, y: 1))]
 
 struct ContentView : View{
     var body: some View {
@@ -76,32 +77,40 @@ struct ContentView : View{
                     }
                 }
                 .stroke(Color.red, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+
                 
-                //Path { path in
-                    //var lastPoint : CGPoint = pointsCopy[0]
-                    //for point in pointsCopy {
-                        //path.move(to: lastPoint)
-                    //    path.addArc(center: lastPoint, radius: 10, startAngle: .degrees(0), endAngle: .degrees(350), clockwise: true)
-                    //    lastPoint = point
-                    //}
-                    //path.move(to: lastPoint)
-                    //path.addArc(center: CGPoint(x:0,y:0), radius: 10, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
+                Path { path in
+                    var lastPoint : CGPoint = pointsCopy[0]
+                    for point in pointsCopy {
+                        path.move(to: lastPoint)
+                        path.addArc(center: lastPoint, radius: 5, startAngle: .degrees(0), endAngle: .degrees(361), clockwise: true)
+                        lastPoint = point
+                        path.closeSubpath()
+                    }
+                    path.move(to: lastPoint)
+                    path.addArc(center: lastPoint, radius: 5, startAngle: .degrees(0), endAngle: .degrees(361), clockwise: true)
+                    path.closeSubpath()
                     
-                    //lastPoint = pointsCopy[1]
-                    //path.addArc(center: lastPoint, radius: 10, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
-                //}
-                //.stroke(Color.blue, lineWidth: 2);
+                }
+                //.stroke(Color.blue, lineWidth: 2)
+                .fill(Color.red)
+                
                 
                 //var counter : Int = 0
-                ForEach((1...10), id: \.self) {
-                    Path{ path in
-                        path.addArc(center: points[0], radius: 10, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
-                    }
-                    .stroke(Color.blue, linewidth: 2)
+                //ForEach((1...10), id: \.self) {
+                    //Path{ path in
+                    //    path.addArc(center: points[0], radius: 10, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
+                    //}
+                    //.stroke(Color.blue, linewidth: 2)
                     //counter++
-                }
+                //}
             }
-            Spacer()
+            
+            
+
+            List(points2) { point in
+                Text("hallo")
+            }
         }
         .padding()
     }
@@ -111,7 +120,6 @@ struct Point: Identifiable {
     let id: Int
     let position: CGPoint
 }
-
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

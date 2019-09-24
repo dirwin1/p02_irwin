@@ -8,16 +8,19 @@
 
 import SwiftUI
 
-var numVerticalLines: Int = 25
-var numHorizontalLines: Int = 25
+var numVerticalLines: Int = 18
+var numHorizontalLines: Int = 18
 var pointsCopy : [Point] = []
 var currID : Int = 6
 var counter : Int = 0
+var xScale : CGFloat = 0
+var yScale : CGFloat = 0
 
 struct ContentView : View{
     @State private var points = [Point(id: 0, position: CGPoint(x:0, y: 1), group: 1), Point(id: 1, position: CGPoint(x:1, y: 1), group: 1), Point(id: 2, position: CGPoint(x:2, y: 2), group: 1), Point(id: 3, position: CGPoint(x:3, y: 2), group: 1), Point(id: 4, position: CGPoint(x:4, y: 3), group: 1), Point(id: 5, position: CGPoint(x:5, y: 1.5), group: 1)]
     @State private var xCoord: String = ""
     @State private var yCoord: String = ""
+    @State private var touchPos: CGPoint = CGPoint(x:0,y:0)
 
     var body: some View {
         VStack(alignment: .leading){
@@ -39,6 +42,7 @@ struct ContentView : View{
                 }
                 .stroke(Color(red: 0.2, green: 0.2, blue: 0.2), lineWidth: 0.5)
                 
+                /*
                 //Axis
                 Path{ path in
                     path.move(to: CGPoint(x: 0, y: 0))
@@ -47,13 +51,14 @@ struct ContentView : View{
                     path.addLine(to: CGPoint(x:geometry.size.width, y: geometry.size.height))
                 }
                 .stroke(Color(red: 0.2, green: 0.2, blue: 0.2), lineWidth: 1)
+                */
                 
                 //Add lines
                 Path{ path in
                     if(self.points.count > 0){
                         //Calculate the scale
-                        var xScale : CGFloat = 0
-                        var yScale : CGFloat = 0
+                        xScale = 0
+                        yScale = 0
                         for point in self.points{
                             if(point.position.x > xScale){
                                 xScale = point.position.x
@@ -197,7 +202,13 @@ struct ContentView : View{
                     
                 }
                 .fill(Color.purple)
+                
+                //draw touch position
+                Text("(\(self.touchPos.x/geometry.size.width * xScale), \((1-(self.touchPos.y/geometry.size.height)) * yScale))").position(self.touchPos)
             }
+            .gesture(DragGesture(minimumDistance: 0).onChanged { value in
+                self.touchPos = value.location
+            })
             
             //add points
             HStack{
